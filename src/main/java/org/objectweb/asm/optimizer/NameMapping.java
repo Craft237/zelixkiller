@@ -7,12 +7,11 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-
 import org.objectweb.asm.Type;
 
 /**
  * A MAPPING from names to names, used to rename classes, fields and methods.
- * 
+ *
  * @author Eric Bruneton
  */
 public class NameMapping {

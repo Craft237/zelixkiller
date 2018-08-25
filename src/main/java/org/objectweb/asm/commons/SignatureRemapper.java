@@ -31,13 +31,12 @@
 package org.objectweb.asm.commons;
 
 import java.util.Stack;
-
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureVisitor;
 
 /**
  * A {@link SignatureVisitor} adapter for type mapping.
- * 
+ *
  * @author Eugene Kuleshov
  */
 public class SignatureRemapper extends SignatureVisitor {
@@ -53,7 +52,7 @@ public class SignatureRemapper extends SignatureVisitor {
     }
 
     protected SignatureRemapper(final int api, final SignatureVisitor v,
-            final Remapper remapper) {
+                                final Remapper remapper) {
         super(api);
         this.v = v;
         this.remapper = remapper;
@@ -73,7 +72,7 @@ public class SignatureRemapper extends SignatureVisitor {
         String remappedOuter = remapper.mapType(outerClassName) + '$';
         String remappedName = remapper.mapType(className);
         int index = remappedName.startsWith(remappedOuter) ? remappedOuter
-                .length() : remappedName.lastIndexOf('$') + 1;
+            .length() : remappedName.lastIndexOf('$') + 1;
         v.visitInnerClassType(remappedName.substring(index));
     }
 

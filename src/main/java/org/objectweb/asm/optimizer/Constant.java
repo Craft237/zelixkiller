@@ -1,13 +1,12 @@
 package org.objectweb.asm.optimizer;
 
 import java.util.Arrays;
-
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Handle;
 
 /**
  * A constant pool item.
- * 
+ *
  * @author Eric Bruneton
  */
 class Constant {
@@ -15,16 +14,16 @@ class Constant {
     /**
      * Type of this constant pool item. A single class is used to represent all
      * constant pool item types, in order to minimize the bytecode size of this
-     * package. The value of this field is 
+     * package. The value of this field is
      * I, J, F, D, S, s, C, T, G, M, N, y,
-     * t, [h..r] (for Constant 
+     * t, [h..r] (for Constant
      * Integer, Long, Float, Double, STR, UTF8, Class,
      * NameType, Fieldref, Methodref, InterfaceMethodref, InvokeDynamic,
      * MethodType and MethodHandle constant pool items respectively).
-     * 
+     * <p>
      * The 9 variable of MethodHandle constants are stored between h and r
      * following this table
-     *                    tag   type  interface
+     * tag   type  interface
      * H_GETFIELD          1     h    false
      * H_GETSTATIC         2     i    false
      * H_PUTFIELD          3     j    false
@@ -105,9 +104,8 @@ class Constant {
 
     /**
      * Sets this item to an integer item.
-     * 
-     * @param intVal
-     *            the value of this item.
+     *
+     * @param intVal the value of this item.
      */
     void set(final int intVal) {
         this.type = 'I';
@@ -117,9 +115,8 @@ class Constant {
 
     /**
      * Sets this item to a long item.
-     * 
-     * @param longVal
-     *            the value of this item.
+     *
+     * @param longVal the value of this item.
      */
     void set(final long longVal) {
         this.type = 'J';
@@ -129,9 +126,8 @@ class Constant {
 
     /**
      * Sets this item to a float item.
-     * 
-     * @param floatVal
-     *            the value of this item.
+     *
+     * @param floatVal the value of this item.
      */
     void set(final float floatVal) {
         this.type = 'F';
@@ -141,9 +137,8 @@ class Constant {
 
     /**
      * Sets this item to a double item.
-     * 
-     * @param doubleVal
-     *            the value of this item.
+     *
+     * @param doubleVal the value of this item.
      */
     void set(final double doubleVal) {
         this.type = 'D';
@@ -153,57 +148,49 @@ class Constant {
 
     /**
      * Sets this item to an item that do not hold a primitive value.
-     * 
-     * @param type
-     *            the type of this item.
-     * @param strVal1
-     *            first part of the value of this item.
-     * @param strVal2
-     *            second part of the value of this item.
-     * @param strVal3
-     *            third part of the value of this item.
+     *
+     * @param type    the type of this item.
+     * @param strVal1 first part of the value of this item.
+     * @param strVal2 second part of the value of this item.
+     * @param strVal3 third part of the value of this item.
      */
     void set(final char type, final String strVal1, final String strVal2,
-            final String strVal3) {
+             final String strVal3) {
         this.type = type;
         this.strVal1 = strVal1;
         this.strVal2 = strVal2;
         this.objVal3 = strVal3;
         switch (type) {
-        case 's':
-        case 'S':
-        case 'C':
-        case 't':
-            hashCode = 0x7FFFFFFF & (type + strVal1.hashCode());
-            return;
-        case 'T':
-            hashCode = 0x7FFFFFFF & (type + strVal1.hashCode()
+            case 's':
+            case 'S':
+            case 'C':
+            case 't':
+                hashCode = 0x7FFFFFFF & (type + strVal1.hashCode());
+                return;
+            case 'T':
+                hashCode = 0x7FFFFFFF & (type + strVal1.hashCode()
                     * strVal2.hashCode());
-            return;
+                return;
             // case 'G':
             // case 'M':
             // case 'N':
             // case 'h' ... 'r':
-        default:
-            hashCode = 0x7FFFFFFF & (type + strVal1.hashCode()
+            default:
+                hashCode = 0x7FFFFFFF & (type + strVal1.hashCode()
                     * strVal2.hashCode() * strVal3.hashCode());
         }
     }
 
     /**
      * Set this item to an InvokeDynamic item.
-     * 
-     * @param name
-     *            invokedynamic's name.
-     * @param desc
-     *            invokedynamic's descriptor.
-     * @param bsm
-     *            bootstrap method.
-     * @param bsmArgs
-     *            bootstrap method constant arguments.
+     *
+     * @param name    invokedynamic's name.
+     * @param desc    invokedynamic's descriptor.
+     * @param bsm     bootstrap method.
+     * @param bsmArgs bootstrap method constant arguments.
      */
     void set(final String name, final String desc, final Handle bsm,
-            final Object[] bsmArgs) {
+             final Object[] bsmArgs) {
         this.type = 'y';
         this.strVal1 = name;
         this.strVal2 = desc;
@@ -219,47 +206,47 @@ class Constant {
 
     void write(final ClassWriter cw) {
         switch (type) {
-        case 'I':
-            cw.newConst(intVal);
-            break;
-        case 'J':
-            cw.newConst(longVal);
-            break;
-        case 'F':
-            cw.newConst(floatVal);
-            break;
-        case 'D':
-            cw.newConst(doubleVal);
-            break;
-        case 'S':
-            cw.newConst(strVal1);
-            break;
-        case 's':
-            cw.newUTF8(strVal1);
-            break;
-        case 'C':
-            cw.newClass(strVal1);
-            break;
-        case 'T':
-            cw.newNameType(strVal1, strVal2);
-            break;
-        case 'G':
-            cw.newField(strVal1, strVal2, (String) objVal3);
-            break;
-        case 'M':
-            cw.newMethod(strVal1, strVal2, (String) objVal3, false);
-            break;
-        case 'N':
-            cw.newMethod(strVal1, strVal2, (String) objVal3, true);
-            break;
-        case 'y':
-            cw.newInvokeDynamic(strVal1, strVal2, (Handle) objVal3, objVals);
-            break;
-        case 't':
-            cw.newMethodType(strVal1);
-            break;
-        default:  // 'h' ... 'r' : handle
-            cw.newHandle(type - 'h' + 1 - ((type >= 'q')? 4: 0), strVal1, strVal2, (String) objVal3, type >= 'p');
+            case 'I':
+                cw.newConst(intVal);
+                break;
+            case 'J':
+                cw.newConst(longVal);
+                break;
+            case 'F':
+                cw.newConst(floatVal);
+                break;
+            case 'D':
+                cw.newConst(doubleVal);
+                break;
+            case 'S':
+                cw.newConst(strVal1);
+                break;
+            case 's':
+                cw.newUTF8(strVal1);
+                break;
+            case 'C':
+                cw.newClass(strVal1);
+                break;
+            case 'T':
+                cw.newNameType(strVal1, strVal2);
+                break;
+            case 'G':
+                cw.newField(strVal1, strVal2, (String) objVal3);
+                break;
+            case 'M':
+                cw.newMethod(strVal1, strVal2, (String) objVal3, false);
+                break;
+            case 'N':
+                cw.newMethod(strVal1, strVal2, (String) objVal3, true);
+                break;
+            case 'y':
+                cw.newInvokeDynamic(strVal1, strVal2, (Handle) objVal3, objVals);
+                break;
+            case 't':
+                cw.newMethodType(strVal1);
+                break;
+            default:  // 'h' ... 'r' : handle
+                cw.newHandle(type - 'h' + 1 - ((type >= 'q') ? 4 : 0), strVal1, strVal2, (String) objVal3, type >= 'p');
         }
     }
 
@@ -271,31 +258,31 @@ class Constant {
         Constant c = (Constant) o;
         if (c.type == type) {
             switch (type) {
-            case 'I':
-                return c.intVal == intVal;
-            case 'J':
-                return c.longVal == longVal;
-            case 'F':
-                return Float.compare(c.floatVal, floatVal) == 0;
-            case 'D':
-                return Double.compare(c.doubleVal, doubleVal) == 0;
-            case 's':
-            case 'S':
-            case 'C':
-            case 't':
-                return c.strVal1.equals(strVal1);
-            case 'T':
-                return c.strVal1.equals(strVal1) && c.strVal2.equals(strVal2);
-            case 'y':
-                return c.strVal1.equals(strVal1) && c.strVal2.equals(strVal2)
+                case 'I':
+                    return c.intVal == intVal;
+                case 'J':
+                    return c.longVal == longVal;
+                case 'F':
+                    return Float.compare(c.floatVal, floatVal) == 0;
+                case 'D':
+                    return Double.compare(c.doubleVal, doubleVal) == 0;
+                case 's':
+                case 'S':
+                case 'C':
+                case 't':
+                    return c.strVal1.equals(strVal1);
+                case 'T':
+                    return c.strVal1.equals(strVal1) && c.strVal2.equals(strVal2);
+                case 'y':
+                    return c.strVal1.equals(strVal1) && c.strVal2.equals(strVal2)
                         && c.objVal3.equals(objVal3)
                         && Arrays.equals(c.objVals, objVals);
                 // case 'G':
                 // case 'M':
                 // case 'N':
                 // case 'h' ... 'r':
-            default:
-                return c.strVal1.equals(strVal1) && c.strVal2.equals(strVal2)
+                default:
+                    return c.strVal1.equals(strVal1) && c.strVal2.equals(strVal2)
                         && c.objVal3.equals(objVal3);
             }
         }

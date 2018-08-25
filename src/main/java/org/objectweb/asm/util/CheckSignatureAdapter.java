@@ -34,7 +34,7 @@ import org.objectweb.asm.signature.SignatureVisitor;
 
 /**
  * A {@link SignatureVisitor} that checks that its methods are properly used.
- * 
+ *
  * @author Eric Bruneton
  */
 public class CheckSignatureAdapter extends SignatureVisitor {
@@ -103,14 +103,12 @@ public class CheckSignatureAdapter extends SignatureVisitor {
      * Creates a new {@link CheckSignatureAdapter} object. <i>Subclasses must
      * not use this constructor</i>. Instead, they must use the
      * {@link #CheckSignatureAdapter(int, int, SignatureVisitor)} version.
-     * 
-     * @param type
-     *            the type of signature to be checked. See
-     *            {@link #CLASS_SIGNATURE}, {@link #METHOD_SIGNATURE} and
-     *            {@link #TYPE_SIGNATURE}.
-     * @param sv
-     *            the visitor to which this adapter must delegate calls. May be
-     *            <tt>null</tt>.
+     *
+     * @param type the type of signature to be checked. See
+     *             {@link #CLASS_SIGNATURE}, {@link #METHOD_SIGNATURE} and
+     *             {@link #TYPE_SIGNATURE}.
+     * @param sv   the visitor to which this adapter must delegate calls. May be
+     *             <tt>null</tt>.
      */
     public CheckSignatureAdapter(final int type, final SignatureVisitor sv) {
         this(Opcodes.ASM5, type, sv);
@@ -118,20 +116,17 @@ public class CheckSignatureAdapter extends SignatureVisitor {
 
     /**
      * Creates a new {@link CheckSignatureAdapter} object.
-     * 
-     * @param api
-     *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
-     * @param type
-     *            the type of signature to be checked. See
-     *            {@link #CLASS_SIGNATURE}, {@link #METHOD_SIGNATURE} and
-     *            {@link #TYPE_SIGNATURE}.
-     * @param sv
-     *            the visitor to which this adapter must delegate calls. May be
-     *            <tt>null</tt>.
+     *
+     * @param api  the ASM API version implemented by this visitor. Must be one
+     *             of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     * @param type the type of signature to be checked. See
+     *             {@link #CLASS_SIGNATURE}, {@link #METHOD_SIGNATURE} and
+     *             {@link #TYPE_SIGNATURE}.
+     * @param sv   the visitor to which this adapter must delegate calls. May be
+     *             <tt>null</tt>.
      */
     protected CheckSignatureAdapter(final int api, final int type,
-            final SignatureVisitor sv) {
+                                    final SignatureVisitor sv) {
         super(api);
         this.type = type;
         this.state = EMPTY;
@@ -143,7 +138,7 @@ public class CheckSignatureAdapter extends SignatureVisitor {
     @Override
     public void visitFormalTypeParameter(final String name) {
         if (type == TYPE_SIGNATURE
-                || (state != EMPTY && state != FORMAL && state != BOUND)) {
+            || (state != EMPTY && state != FORMAL && state != BOUND)) {
             throw new IllegalStateException();
         }
         CheckMethodAdapter.checkIdentifier(name, "formal type parameter");
@@ -198,7 +193,7 @@ public class CheckSignatureAdapter extends SignatureVisitor {
     @Override
     public SignatureVisitor visitParameterType() {
         if (type != METHOD_SIGNATURE
-                || (state & (EMPTY | FORMAL | BOUND | PARAM)) == 0) {
+            || (state & (EMPTY | FORMAL | BOUND | PARAM)) == 0) {
             throw new IllegalArgumentException();
         }
         state = PARAM;
@@ -209,7 +204,7 @@ public class CheckSignatureAdapter extends SignatureVisitor {
     @Override
     public SignatureVisitor visitReturnType() {
         if (type != METHOD_SIGNATURE
-                || (state & (EMPTY | FORMAL | BOUND | PARAM)) == 0) {
+            || (state & (EMPTY | FORMAL | BOUND | PARAM)) == 0) {
             throw new IllegalArgumentException();
         }
         state = RETURN;

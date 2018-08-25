@@ -30,14 +30,13 @@
 package org.objectweb.asm.tree.analysis;
 
 import java.util.List;
-
 import org.objectweb.asm.Type;
 
 /**
  * An extended {@link BasicVerifier} that performs more precise verifications.
  * This verifier computes exact class types, instead of using a single "object
  * reference" type (as done in the {@link BasicVerifier}).
- * 
+ *
  * @author Eric Bruneton
  * @author Bing Ran
  */
@@ -78,42 +77,35 @@ public class SimpleVerifier extends BasicVerifier {
     /**
      * Constructs a new {@link SimpleVerifier} to verify a specific class. This
      * class will not be loaded into the JVM since it may be incorrect.
-     * 
-     * @param currentClass
-     *            the class that is verified.
-     * @param currentSuperClass
-     *            the super class of the class that is verified.
-     * @param isInterface
-     *            if the class that is verified is an interface.
+     *
+     * @param currentClass      the class that is verified.
+     * @param currentSuperClass the super class of the class that is verified.
+     * @param isInterface       if the class that is verified is an interface.
      */
     public SimpleVerifier(final Type currentClass,
-            final Type currentSuperClass, final boolean isInterface) {
+                          final Type currentSuperClass, final boolean isInterface) {
         this(currentClass, currentSuperClass, null, isInterface);
     }
 
     /**
      * Constructs a new {@link SimpleVerifier} to verify a specific class. This
      * class will not be loaded into the JVM since it may be incorrect.
-     * 
-     * @param currentClass
-     *            the class that is verified.
-     * @param currentSuperClass
-     *            the super class of the class that is verified.
-     * @param currentClassInterfaces
-     *            the interfaces implemented by the class that is verified.
-     * @param isInterface
-     *            if the class that is verified is an interface.
+     *
+     * @param currentClass           the class that is verified.
+     * @param currentSuperClass      the super class of the class that is verified.
+     * @param currentClassInterfaces the interfaces implemented by the class that is verified.
+     * @param isInterface            if the class that is verified is an interface.
      */
     public SimpleVerifier(final Type currentClass,
-            final Type currentSuperClass,
-            final List<Type> currentClassInterfaces, final boolean isInterface) {
+                          final Type currentSuperClass,
+                          final List<Type> currentClassInterfaces, final boolean isInterface) {
         this(ASM5, currentClass, currentSuperClass, currentClassInterfaces,
-                isInterface);
+            isInterface);
     }
 
     protected SimpleVerifier(final int api, final Type currentClass,
-            final Type currentSuperClass,
-            final List<Type> currentClassInterfaces, final boolean isInterface) {
+                             final Type currentSuperClass,
+                             final List<Type> currentClassInterfaces, final boolean isInterface) {
         super(api);
         this.currentClass = currentClass;
         this.currentSuperClass = currentSuperClass;
@@ -125,9 +117,8 @@ public class SimpleVerifier extends BasicVerifier {
      * Set the <code>ClassLoader</code> which will be used to load referenced
      * classes. This is useful if you are verifying multiple interdependent
      * classes.
-     * 
-     * @param loader
-     *            a <code>ClassLoader</code> to use
+     *
+     * @param loader a <code>ClassLoader</code> to use
      */
     public void setClassLoader(final ClassLoader loader) {
         this.loader = loader;
@@ -142,11 +133,11 @@ public class SimpleVerifier extends BasicVerifier {
         boolean isArray = type.getSort() == Type.ARRAY;
         if (isArray) {
             switch (type.getElementType().getSort()) {
-            case Type.BOOLEAN:
-            case Type.CHAR:
-            case Type.BYTE:
-            case Type.SHORT:
-                return new BasicValue(type);
+                case Type.BOOLEAN:
+                case Type.CHAR:
+                case Type.BYTE:
+                case Type.SHORT:
+                    return new BasicValue(type);
             }
         }
 
@@ -170,17 +161,17 @@ public class SimpleVerifier extends BasicVerifier {
     protected boolean isArrayValue(final BasicValue value) {
         Type t = value.getType();
         return t != null
-                && ("Lnull;".equals(t.getDescriptor()) || t.getSort() == Type.ARRAY);
+            && ("Lnull;".equals(t.getDescriptor()) || t.getSort() == Type.ARRAY);
     }
 
     @Override
     protected BasicValue getElementValue(final BasicValue objectArrayValue)
-            throws AnalyzerException {
+        throws AnalyzerException {
         Type arrayType = objectArrayValue.getType();
         if (arrayType != null) {
             if (arrayType.getSort() == Type.ARRAY) {
                 return newValue(Type.getType(arrayType.getDescriptor()
-                        .substring(1)));
+                    .substring(1)));
             } else if ("Lnull;".equals(arrayType.getDescriptor())) {
                 return objectArrayValue;
             }
@@ -190,27 +181,27 @@ public class SimpleVerifier extends BasicVerifier {
 
     @Override
     protected boolean isSubTypeOf(final BasicValue value,
-            final BasicValue expected) {
+                                  final BasicValue expected) {
         Type expectedType = expected.getType();
         Type type = value.getType();
         switch (expectedType.getSort()) {
-        case Type.INT:
-        case Type.FLOAT:
-        case Type.LONG:
-        case Type.DOUBLE:
-            return type.equals(expectedType);
-        case Type.ARRAY:
-        case Type.OBJECT:
-            if ("Lnull;".equals(type.getDescriptor())) {
-                return true;
-            } else if (type.getSort() == Type.OBJECT
+            case Type.INT:
+            case Type.FLOAT:
+            case Type.LONG:
+            case Type.DOUBLE:
+                return type.equals(expectedType);
+            case Type.ARRAY:
+            case Type.OBJECT:
+                if ("Lnull;".equals(type.getDescriptor())) {
+                    return true;
+                } else if (type.getSort() == Type.OBJECT
                     || type.getSort() == Type.ARRAY) {
-                return isAssignableFrom(expectedType, type);
-            } else {
-                return false;
-            }
-        default:
-            throw new Error("Internal error");
+                    return isAssignableFrom(expectedType, type);
+                } else {
+                    return false;
+                }
+            default:
+                throw new Error("Internal error");
         }
     }
 
@@ -220,9 +211,9 @@ public class SimpleVerifier extends BasicVerifier {
             Type t = v.getType();
             Type u = w.getType();
             if (t != null
-                    && (t.getSort() == Type.OBJECT || t.getSort() == Type.ARRAY)) {
+                && (t.getSort() == Type.OBJECT || t.getSort() == Type.ARRAY)) {
                 if (u != null
-                        && (u.getSort() == Type.OBJECT || u.getSort() == Type.ARRAY)) {
+                    && (u.getSort() == Type.OBJECT || u.getSort() == Type.ARRAY)) {
                     if ("Lnull;".equals(t.getDescriptor())) {
                         return w;
                     }
@@ -280,7 +271,7 @@ public class SimpleVerifier extends BasicVerifier {
             } else {
                 if (isInterface) {
                     return u.getSort() == Type.OBJECT
-                            || u.getSort() == Type.ARRAY;
+                        || u.getSort() == Type.ARRAY;
                 }
                 return isAssignableFrom(t, getSuperClass(u));
             }
@@ -310,7 +301,7 @@ public class SimpleVerifier extends BasicVerifier {
         try {
             if (t.getSort() == Type.ARRAY) {
                 return Class.forName(t.getDescriptor().replace('/', '.'),
-                        false, loader);
+                    false, loader);
             }
             return Class.forName(t.getClassName(), false, loader);
         } catch (ClassNotFoundException e) {

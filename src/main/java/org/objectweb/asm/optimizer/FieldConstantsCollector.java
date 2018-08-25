@@ -9,7 +9,7 @@ import org.objectweb.asm.TypePath;
 /**
  * A {@link FieldVisitor} that collects the {@link Constant}s of the fields it
  * visits.
- * 
+ *
  * @author Eric Bruneton
  */
 public class FieldConstantsCollector extends FieldVisitor {
@@ -23,7 +23,7 @@ public class FieldConstantsCollector extends FieldVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(final String desc,
-            final boolean visible) {
+                                             final boolean visible) {
         cp.newUTF8(desc);
         if (visible) {
             cp.newUTF8("RuntimeVisibleAnnotations");
@@ -31,12 +31,12 @@ public class FieldConstantsCollector extends FieldVisitor {
             cp.newUTF8("RuntimeInvisibleAnnotations");
         }
         return new AnnotationConstantsCollector(fv.visitAnnotation(desc,
-                visible), cp);
+            visible), cp);
     }
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
+                                                 TypePath typePath, String desc, boolean visible) {
         cp.newUTF8(desc);
         if (visible) {
             cp.newUTF8("RuntimeVisibleTypeAnnotations");
@@ -44,7 +44,7 @@ public class FieldConstantsCollector extends FieldVisitor {
             cp.newUTF8("RuntimeInvisibleTypeAnnotations");
         }
         return new AnnotationConstantsCollector(fv.visitAnnotation(desc,
-                visible), cp);
+            visible), cp);
     }
 
     @Override

@@ -35,7 +35,7 @@ import org.objectweb.asm.Type;
 
 /**
  * An {@link AnnotationVisitor} that checks that its methods are properly used.
- * 
+ *
  * @author Eric Bruneton
  */
 public class CheckAnnotationAdapter extends AnnotationVisitor {
@@ -58,14 +58,14 @@ public class CheckAnnotationAdapter extends AnnotationVisitor {
         checkEnd();
         checkName(name);
         if (!(value instanceof Byte || value instanceof Boolean
-                || value instanceof Character || value instanceof Short
-                || value instanceof Integer || value instanceof Long
-                || value instanceof Float || value instanceof Double
-                || value instanceof String || value instanceof Type
-                || value instanceof byte[] || value instanceof boolean[]
-                || value instanceof char[] || value instanceof short[]
-                || value instanceof int[] || value instanceof long[]
-                || value instanceof float[] || value instanceof double[])) {
+            || value instanceof Character || value instanceof Short
+            || value instanceof Integer || value instanceof Long
+            || value instanceof Float || value instanceof Double
+            || value instanceof String || value instanceof Type
+            || value instanceof byte[] || value instanceof boolean[]
+            || value instanceof char[] || value instanceof short[]
+            || value instanceof int[] || value instanceof long[]
+            || value instanceof float[] || value instanceof double[])) {
             throw new IllegalArgumentException("Invalid annotation value");
         }
         if (value instanceof Type) {
@@ -81,7 +81,7 @@ public class CheckAnnotationAdapter extends AnnotationVisitor {
 
     @Override
     public void visitEnum(final String name, final String desc,
-            final String value) {
+                          final String value) {
         checkEnd();
         checkName(name);
         CheckMethodAdapter.checkDesc(desc, false);
@@ -95,12 +95,12 @@ public class CheckAnnotationAdapter extends AnnotationVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(final String name,
-            final String desc) {
+                                             final String desc) {
         checkEnd();
         checkName(name);
         CheckMethodAdapter.checkDesc(desc, false);
         return new CheckAnnotationAdapter(av == null ? null
-                : av.visitAnnotation(name, desc));
+            : av.visitAnnotation(name, desc));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class CheckAnnotationAdapter extends AnnotationVisitor {
         checkEnd();
         checkName(name);
         return new CheckAnnotationAdapter(av == null ? null
-                : av.visitArray(name), false);
+            : av.visitArray(name), false);
     }
 
     @Override
@@ -123,14 +123,14 @@ public class CheckAnnotationAdapter extends AnnotationVisitor {
     private void checkEnd() {
         if (end) {
             throw new IllegalStateException(
-                    "Cannot call a visit method after visitEnd has been called");
+                "Cannot call a visit method after visitEnd has been called");
         }
     }
 
     private void checkName(final String name) {
         if (named && name == null) {
             throw new IllegalArgumentException(
-                    "Annotation value name must not be null");
+                "Annotation value name must not be null");
         }
     }
 }

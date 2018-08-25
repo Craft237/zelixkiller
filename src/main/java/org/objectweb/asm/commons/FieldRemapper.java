@@ -37,7 +37,7 @@ import org.objectweb.asm.TypePath;
 
 /**
  * A {@link FieldVisitor} adapter for type remapping.
- * 
+ *
  * @author Eugene Kuleshov
  */
 public class FieldRemapper extends FieldVisitor {
@@ -49,7 +49,7 @@ public class FieldRemapper extends FieldVisitor {
     }
 
     protected FieldRemapper(final int api, final FieldVisitor fv,
-            final Remapper remapper) {
+                            final Remapper remapper) {
         super(api, fv);
         this.remapper = remapper;
     }
@@ -57,15 +57,15 @@ public class FieldRemapper extends FieldVisitor {
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         AnnotationVisitor av = fv.visitAnnotation(remapper.mapDesc(desc),
-                visible);
+            visible);
         return av == null ? null : new AnnotationRemapper(av, remapper);
     }
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
+                                                 TypePath typePath, String desc, boolean visible) {
         AnnotationVisitor av = super.visitTypeAnnotation(typeRef, typePath,
-                remapper.mapDesc(desc), visible);
+            remapper.mapDesc(desc), visible);
         return av == null ? null : new AnnotationRemapper(av, remapper);
     }
 }

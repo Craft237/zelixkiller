@@ -17,18 +17,16 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-
+import me.lpk.log.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import me.lpk.log.Logger;
-
 /**
  * A Jar file optimizer.
- * 
+ *
  * @author Eric Bruneton
  */
 public class JarOptimizer {
@@ -124,8 +122,8 @@ public class JarOptimizer {
 
         @Override
         public void visit(final int version, final int access,
-                final String name, final String signature,
-                final String superName, final String[] interfaces) {
+                          final String name, final String signature,
+                          final String superName, final String[] interfaces) {
             owner = name;
             if (owner.startsWith("java/")) {
                 System.out.println("class " + name + ' ' + superName);
@@ -134,7 +132,7 @@ public class JarOptimizer {
 
         @Override
         public FieldVisitor visitField(final int access, final String name,
-                final String desc, final String signature, final Object value) {
+                                       final String desc, final String signature, final Object value) {
             if (owner.startsWith("java/")) {
                 System.out.println(owner + ' ' + name);
             }
@@ -143,8 +141,8 @@ public class JarOptimizer {
 
         @Override
         public MethodVisitor visitMethod(final int access, final String name,
-                final String desc, final String signature,
-                final String[] exceptions) {
+                                         final String desc, final String signature,
+                                         final String[] exceptions) {
             if (owner.startsWith("java/")) {
                 System.out.println(owner + ' ' + name + desc);
             }
@@ -164,27 +162,27 @@ public class JarOptimizer {
 
         @Override
         public void visit(final int version, final int access,
-                final String name, final String signature,
-                final String superName, final String[] interfaces) {
+                          final String name, final String signature,
+                          final String superName, final String[] interfaces) {
             owner = name;
         }
 
         @Override
         public MethodVisitor visitMethod(final int access, final String name,
-                final String desc, final String signature,
-                final String[] exceptions) {
+                                         final String desc, final String signature,
+                                         final String[] exceptions) {
             method = name + desc;
             return new MethodVisitor(Opcodes.ASM5) {
                 @Override
                 public void visitFieldInsn(final int opcode,
-                        final String owner, final String name, final String desc) {
+                                           final String owner, final String name, final String desc) {
                     check(owner, name);
                 }
 
                 @Override
                 public void visitMethodInsn(final int opcode,
-                        final String owner, final String name,
-                        final String desc, final boolean itf) {
+                                            final String owner, final String name,
+                                            final String desc, final boolean itf) {
                     check(owner, name + desc);
                 }
             };
@@ -200,8 +198,8 @@ public class JarOptimizer {
                     o = HIERARCHY.get(o);
                 }
                 Logger.logVeryHigh("WARNING: " + owner + ' ' + member
-                        + " called in " + this.owner + ' ' + method
-                        + " is not defined in JDK 1.3 API");
+                    + " called in " + this.owner + ' ' + method
+                    + " is not defined in JDK 1.3 API");
             }
         }
     }

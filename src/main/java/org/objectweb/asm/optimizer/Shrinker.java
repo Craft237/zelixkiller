@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Handle;
@@ -23,7 +22,7 @@ import org.objectweb.asm.commons.SimpleRemapper;
 
 /**
  * A class file shrinker utility.
- * 
+ *
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
@@ -68,7 +67,7 @@ public class Shrinker {
     }
 
     static void optimize(final File f, final File d, final Remapper remapper)
-            throws IOException {
+        throws IOException {
         if (f.isDirectory()) {
             File[] files = f.listFiles();
             for (int i = 0; i < files.length; ++i) {
@@ -84,7 +83,7 @@ public class Shrinker {
             cr.accept(co, ClassReader.SKIP_DEBUG);
 
             Set<Constant> constants = new TreeSet<Constant>(
-                    new ConstantComparator());
+                new ConstantComparator());
             constants.addAll(cp.values());
 
             cr = new ClassReader(cw.toByteArray());
@@ -104,7 +103,7 @@ public class Shrinker {
             if (!g.exists() || g.lastModified() < f.lastModified()) {
                 if (!g.getParentFile().exists() && !g.getParentFile().mkdirs()) {
                     throw new IOException("Cannot create directory "
-                            + g.getParentFile());
+                        + g.getParentFile());
                 }
                 OutputStream os = new FileOutputStream(g);
                 try {
@@ -122,49 +121,49 @@ public class Shrinker {
             int d = getSort(c1) - getSort(c2);
             if (d == 0) {
                 switch (c1.type) {
-                case 'I':
-                    return ((Integer)c1.intVal).compareTo(c2.intVal);
-                case 'J':
-                    return ((Long)c1.longVal).compareTo(c2.longVal);
-                case 'F':
-                    return ((Float)c1.floatVal).compareTo(c2.floatVal);
-                case 'D':
-                    return ((Double)c1.doubleVal).compareTo(c2.doubleVal);
-                case 's':
-                case 'S':
-                case 'C':
-                case 't':
-                    return c1.strVal1.compareTo(c2.strVal1);
-                case 'T':
-                    d = c1.strVal1.compareTo(c2.strVal1);
-                    if (d == 0) {
-                        d = c1.strVal2.compareTo(c2.strVal2);
-                    }
-                    break;
-                case 'y':
-                    d = c1.strVal1.compareTo(c2.strVal1);
-                    if (d == 0) {
-                        d = c1.strVal2.compareTo(c2.strVal2);
+                    case 'I':
+                        return ((Integer) c1.intVal).compareTo(c2.intVal);
+                    case 'J':
+                        return ((Long) c1.longVal).compareTo(c2.longVal);
+                    case 'F':
+                        return ((Float) c1.floatVal).compareTo(c2.floatVal);
+                    case 'D':
+                        return ((Double) c1.doubleVal).compareTo(c2.doubleVal);
+                    case 's':
+                    case 'S':
+                    case 'C':
+                    case 't':
+                        return c1.strVal1.compareTo(c2.strVal1);
+                    case 'T':
+                        d = c1.strVal1.compareTo(c2.strVal1);
                         if (d == 0) {
-                            Handle bsm1 = (Handle) c1.objVal3;
-                            Handle bsm2 = (Handle) c2.objVal3;
-                            d = compareHandle(bsm1, bsm2);
+                            d = c1.strVal2.compareTo(c2.strVal2);
+                        }
+                        break;
+                    case 'y':
+                        d = c1.strVal1.compareTo(c2.strVal1);
+                        if (d == 0) {
+                            d = c1.strVal2.compareTo(c2.strVal2);
                             if (d == 0) {
-                                d = compareObjects(c1.objVals, c2.objVals);
+                                Handle bsm1 = (Handle) c1.objVal3;
+                                Handle bsm2 = (Handle) c2.objVal3;
+                                d = compareHandle(bsm1, bsm2);
+                                if (d == 0) {
+                                    d = compareObjects(c1.objVals, c2.objVals);
+                                }
                             }
                         }
-                    }
-                    break;
+                        break;
 
-                default:
-                    d = c1.strVal1.compareTo(c2.strVal1);
-                    if (d == 0) {
-                        d = c1.strVal2.compareTo(c2.strVal2);
+                    default:
+                        d = c1.strVal1.compareTo(c2.strVal1);
                         if (d == 0) {
-                            d = ((String) c1.objVal3)
+                            d = c1.strVal2.compareTo(c2.strVal2);
+                            if (d == 0) {
+                                d = ((String) c1.objVal3)
                                     .compareTo((String) c2.objVal3);
+                            }
                         }
-                    }
                 }
             }
             return d;
@@ -197,13 +196,13 @@ public class Shrinker {
                     Object objVal1 = objVals1[i];
                     Object objVal2 = objVals2[i];
                     d = objVal1.getClass().getName()
-                            .compareTo(objVal2.getClass().getName());
+                        .compareTo(objVal2.getClass().getName());
                     if (d == 0) {
                         if (objVal1 instanceof Type) {
                             d = compareType((Type) objVal1, (Type) objVal2);
                         } else if (objVal1 instanceof Handle) {
                             d = compareHandle((Handle) objVal1,
-                                    (Handle) objVal2);
+                                (Handle) objVal2);
                         } else {
                             d = ((Comparable<Object>) objVal1).compareTo(objVal2);
                         }
@@ -219,34 +218,34 @@ public class Shrinker {
 
         private static int getSort(final Constant c) {
             switch (c.type) {
-            case 'I':
-                return 0;
-            case 'J':
-                return 1;
-            case 'F':
-                return 2;
-            case 'D':
-                return 3;
-            case 's':
-                return 4;
-            case 'S':
-                return 5;
-            case 'C':
-                return 6;
-            case 'T':
-                return 7;
-            case 'G':
-                return 8;
-            case 'M':
-                return 9;
-            case 'N':
-                return 10;
-            case 'y':
-                return 11;
-            case 't':
-                return 12;
-            default:
-                return 100 + c.type - 'h';
+                case 'I':
+                    return 0;
+                case 'J':
+                    return 1;
+                case 'F':
+                    return 2;
+                case 'D':
+                    return 3;
+                case 's':
+                    return 4;
+                case 'S':
+                    return 5;
+                case 'C':
+                    return 6;
+                case 'T':
+                    return 7;
+                case 'G':
+                    return 8;
+                case 'M':
+                    return 9;
+                case 'N':
+                    return 10;
+                case 'y':
+                    return 11;
+                case 't':
+                    return 12;
+                default:
+                    return 100 + c.type - 'h';
             }
         }
     }

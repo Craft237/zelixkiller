@@ -33,14 +33,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 /**
  * A node that represents a TABLESWITCH instruction.
- * 
+ *
  * @author Eric Bruneton
  */
 public class TableSwitchInsnNode extends AbstractInsnNode {
@@ -68,19 +67,15 @@ public class TableSwitchInsnNode extends AbstractInsnNode {
 
     /**
      * Constructs a new {@link TableSwitchInsnNode}.
-     * 
-     * @param min
-     *            the minimum key value.
-     * @param max
-     *            the maximum key value.
-     * @param dflt
-     *            beginning of the default handler block.
-     * @param labels
-     *            beginnings of the handler blocks. <tt>labels[i]</tt> is the
-     *            beginning of the handler block for the <tt>min + i</tt> key.
+     *
+     * @param min    the minimum key value.
+     * @param max    the maximum key value.
+     * @param dflt   beginning of the default handler block.
+     * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is the
+     *               beginning of the handler block for the <tt>min + i</tt> key.
      */
     public TableSwitchInsnNode(final int min, final int max,
-            final LabelNode dflt, final LabelNode... labels) {
+                               final LabelNode dflt, final LabelNode... labels) {
         super(Opcodes.TABLESWITCH);
         this.min = min;
         this.max = max;
@@ -109,6 +104,6 @@ public class TableSwitchInsnNode extends AbstractInsnNode {
     @Override
     public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
         return new TableSwitchInsnNode(min, max, clone(dflt, labels), clone(
-                this.labels, labels)).cloneAnnotations(this);
+            this.labels, labels)).cloneAnnotations(this);
     }
 }

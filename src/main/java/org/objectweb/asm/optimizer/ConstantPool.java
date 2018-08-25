@@ -1,14 +1,13 @@
 package org.objectweb.asm.optimizer;
 
 import java.util.HashMap;
-
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 /**
  * A constant pool.
- * 
+ *
  * @author Eric Bruneton
  */
 public class ConstantPool extends HashMap<Constant, Constant> {
@@ -109,8 +108,8 @@ public class ConstantPool extends HashMap<Constant, Constant> {
     }
 
     public Constant newHandle(final int tag, final String owner,
-            final String name, final String desc, final boolean itf) {
-        key4.set((char) ('h' + tag - 1 + (itf && tag != Opcodes.H_INVOKEINTERFACE? 4: 0)), owner, name, desc);
+                              final String name, final String desc, final boolean itf) {
+        key4.set((char) ('h' + tag - 1 + (itf && tag != Opcodes.H_INVOKEINTERFACE ? 4 : 0)), owner, name, desc);
         Constant result = get(key4);
         if (result == null) {
             if (tag <= Opcodes.H_PUTSTATIC) {
@@ -158,7 +157,7 @@ public class ConstantPool extends HashMap<Constant, Constant> {
     }
 
     public Constant newField(final String owner, final String name,
-            final String desc) {
+                             final String desc) {
         key3.set('G', owner, name, desc);
         Constant result = get(key3);
         if (result == null) {
@@ -171,7 +170,7 @@ public class ConstantPool extends HashMap<Constant, Constant> {
     }
 
     public Constant newMethod(final String owner, final String name,
-            final String desc, final boolean itf) {
+                              final String desc, final boolean itf) {
         key3.set(itf ? 'N' : 'M', owner, name, desc);
         Constant result = get(key3);
         if (result == null) {
@@ -184,13 +183,13 @@ public class ConstantPool extends HashMap<Constant, Constant> {
     }
 
     public Constant newInvokeDynamic(String name, String desc, Handle bsm,
-            Object... bsmArgs) {
+                                     Object... bsmArgs) {
         key5.set(name, desc, bsm, bsmArgs);
         Constant result = get(key5);
         if (result == null) {
             newNameType(name, desc);
             newHandle(bsm.getTag(), bsm.getOwner(), bsm.getName(),
-                    bsm.getDesc(), bsm.isInterface());
+                bsm.getDesc(), bsm.isInterface());
             for (int i = 0; i < bsmArgs.length; i++) {
                 newConst(bsmArgs[i]);
             }
